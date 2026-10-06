@@ -1,0 +1,619 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Product Metrics II — Lecture 3</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-page:#F8FAFC;--bg-card:#FFFFFF;--bg-section:#F1F5F9;
+  --accent:#6366F1;--accent-dark:#4338CA;--accent-wash:#EEF2FF;
+  --blue:#0EA5E9;--green:#10B981;--amber:#F59E0B;--red:#EF4444;--purple:#8B5CF6;
+  --text-h:#0F172A;--text-b:#1E293B;--text-s:#64748B;--text-m:#94A3B8;
+  --border:#E2E8F0;--border-strong:#CBD5E1;
+  --r:8px;--rm:12px;--rl:16px;
+  --maxw:1440px;--pad:clamp(24px,4vw,72px);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg-page:#0D1117;--bg-card:#161B27;--bg-section:#1A2235;
+  --text-h:#F1F5F9;--text-b:#CBD5E1;--text-s:#94A3B8;--text-m:#475569;--border:#1E293B;--border-strong:#334155;}}
+:root[data-theme="dark"]{
+  --bg-page:#0D1117;--bg-card:#161B27;--bg-section:#1A2235;
+  --text-h:#F1F5F9;--text-b:#CBD5E1;--text-s:#94A3B8;--text-m:#475569;--border:#1E293B;--border-strong:#334155;}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 52px)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg-page);color:var(--text-b);line-height:1.65;font-size:16px}
+h1{font-size:clamp(2.2rem,4vw,3rem);font-weight:700;color:#fff;line-height:1.15}
+h2{font-size:clamp(1.4rem,2.2vw,1.75rem);font-weight:600;color:var(--text-h);line-height:1.3;margin-bottom:8px}
+h3{font-size:1.05rem;font-weight:600;color:var(--text-h);margin-bottom:6px}
+p{color:var(--text-b);line-height:1.7}
+a{color:var(--accent);text-decoration:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.sec{padding:64px 0}.sec-alt{background:var(--bg-section)}.measure{max-width:720px}
+.hero{background:var(--accent);padding:72px var(--pad) 84px;text-align:center}
+.hero-inner{max-width:var(--maxw);margin:0 auto}
+.hero-chip{display:inline-block;background:rgba(255,255,255,.18);color:#C7D2FE;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 16px;border-radius:20px;margin-bottom:20px}
+.hero-sub{font-size:clamp(1rem,1.4vw,1.2rem);color:#C7D2FE;max-width:640px;margin:18px auto 32px}
+.badges{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-badge{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.28);padding:8px 18px;border-radius:20px;font-size:14px;font-weight:500}
+.snav{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg-card);border-bottom:1px solid var(--border);z-index:100;overflow-x:auto;white-space:nowrap;padding:0 var(--pad)}
+.snav-inner{max-width:var(--maxw);margin:0 auto;display:flex;justify-content:center;flex-wrap:nowrap}
+.snav a{padding:15px 16px;font-size:13.5px;font-weight:500;color:var(--text-s);display:inline-block;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.snav a:hover{color:var(--accent)}.snav a.on{color:var(--accent);border-bottom-color:var(--accent)}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:24px}
+.callout{background:var(--accent-wash);border-left:4px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:16px 20px;margin:16px 0}
+.callout p,.callout div{font-size:14.5px;color:var(--accent-dark)}
+.witty{background:var(--bg-section);border-left:3px solid var(--amber);border-radius:0 var(--r) var(--r) 0;padding:16px 20px;font-size:14.5px;color:var(--text-s);font-style:italic;margin:20px 0}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.mod2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media(max-width:900px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.g2,.g3,.g4,.mod2{grid-template-columns:1fr}.sec{padding:44px 0}.hero{padding:48px 20px 56px}}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.t-blue{background:#E0F2FE;color:#0369A1}.t-green{background:#D1FAE5;color:#065F46}
+.t-amber{background:#FEF3C7;color:#92400E}.t-red{background:#FEE2E2;color:#991B1B}
+.t-purple{background:#EDE9FE;color:#5B21B6}.t-indigo{background:var(--accent-wash);color:var(--accent-dark)}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:10px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit}
+.btn:hover{background:var(--accent-dark)}
+.toollink{display:inline-flex;align-items:center;gap:8px;background:var(--accent-wash);color:var(--accent-dark);border:1px solid var(--border);border-radius:20px;padding:9px 16px;font-size:13.5px;font-weight:600;margin-top:6px}
+.toollink:hover{background:#E0E7FF}
+.slack{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:12px}
+.slack-from{font-size:12px;font-weight:600;color:var(--accent);margin-bottom:4px}
+.slack-msg{font-size:14.5px;color:var(--text-b)}
+/* FUNNEL */
+.fs{border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;background:var(--bg-card)}
+.fsh{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--bg-card);transition:background .15s}
+.fsh:hover{background:var(--bg-section)}
+.fl{width:34px;height:34px;border-radius:var(--r);color:#fff;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fb{display:none;padding:16px 18px;background:var(--bg-section);border-top:1px solid var(--border)}.fb.on{display:block}
+.ml{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ml li{font-size:14px;color:var(--text-b);display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.ml li:last-child{border-bottom:none}.ml li::before{content:"→";color:var(--accent);font-weight:600;flex-shrink:0}
+.rev-btn{width:100%;text-align:left;background:var(--bg-section);border:1px solid var(--border);border-radius:var(--r);padding:11px 16px;cursor:pointer;color:var(--accent);font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;font-family:inherit}
+.rev-btn:hover{background:var(--accent-wash)}
+.rev-body{display:none;margin-top:12px}.rev-body.on{display:block}
+/* ANALOGY */
+.analogy{display:grid;grid-template-columns:0.85fr 1.15fr;gap:0;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;background:var(--bg-card)}
+@media(max-width:820px){.analogy{grid-template-columns:1fr}}
+.an-visual{padding:28px;display:flex;flex-direction:column;justify-content:center;gap:14px;color:#fff}
+.an-visual.bucket{background:linear-gradient(135deg,#0EA5E9,#4338CA)}
+.an-visual.door{background:linear-gradient(135deg,#F59E0B,#B45309)}
+.an-emoji{font-size:52px;line-height:1}
+.an-tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+.an-title{font-size:1.35rem;font-weight:700;color:#fff;line-height:1.25}
+.an-premise{font-size:14.5px;color:rgba(255,255,255,.92);line-height:1.6}
+.an-map{padding:24px 28px;display:flex;flex-direction:column;gap:2px}
+.an-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
+.an-row:last-child{border-bottom:none}
+.an-ico{width:40px;height:40px;border-radius:10px;background:var(--bg-section);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.an-side{font-size:14px;color:var(--text-s);flex:1}.an-arrow{color:var(--text-m);font-weight:700;flex-shrink:0}
+.an-frame{font-size:14px;color:var(--text-h);font-weight:600;flex:1}
+/* QUIZ */
+.quiz{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:24px}
+.quiz .qtag{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.quiz .qq{font-size:15px;font-weight:600;color:var(--text-h);margin-bottom:16px}
+.qopts{display:flex;flex-direction:column;gap:10px}
+.qopt{text-align:left;background:var(--bg-section);border:1.5px solid var(--border);border-radius:var(--r);padding:12px 16px;cursor:pointer;font-size:14px;color:var(--text-b);font-family:inherit;transition:all .15s;display:flex;gap:10px;align-items:flex-start}
+.qopt:hover{border-color:var(--accent)}
+.qopt .qk{font-weight:700;color:var(--text-s);flex-shrink:0}
+.qopt.correct{background:#D1FAE5;border-color:var(--green);color:#065F46}.qopt.correct .qk{color:var(--green)}
+.qopt.wrong{background:#FEE2E2;border-color:var(--red);color:#991B1B}.qopt.wrong .qk{color:var(--red)}
+.qexp{display:none;margin-top:14px;background:var(--accent-wash);border-left:4px solid var(--accent);border-radius:0 var(--r) var(--r) 0;padding:14px 16px;font-size:14px;color:var(--accent-dark)}
+.qexp.on{display:block}.qexp b{color:var(--text-h)}
+/* METRIC CARD */
+.mc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:22px;border-left:4px solid var(--accent)}
+.mc-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.mc-num{width:38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* RETENTION BAR */
+.rbar{display:flex;align-items:flex-end;gap:10px;height:120px;margin:14px 0}
+.rbcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:flex-end}
+.rbfill{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#6366F1,#0EA5E9)}
+.rblbl{font-size:11px;color:var(--text-s);text-align:center}
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--bg-section);border:1px solid var(--border);border-radius:20px;padding:7px 14px;font-size:13px;color:var(--text-b)}
+/* FIG */
+.fig{max-width:900px;margin:22px 0;border:1px solid var(--border);border-radius:var(--rm);overflow:hidden;background:var(--bg-card)}
+.fig img{display:block;width:100%;height:auto;background:var(--bg-section)}
+.fig figcaption{font-size:12.5px;color:var(--text-s);padding:10px 16px;border-top:1px solid var(--border);background:var(--bg-section)}
+/* POCKET */
+.pocket{background:#0F172A;border-radius:var(--rl);padding:36px}
+.pocket h3{color:#C7D2FE;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.prow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.pi{background:rgba(255,255,255,.1);border-radius:6px;padding:7px 13px;font-size:13.5px;color:#E2E8F0}
+.pi span{color:#818CF8;font-weight:700}
+.tw{display:flex;gap:16px;align-items:flex-start;padding:20px 0;border-bottom:1px solid var(--border)}
+.tw:last-child{border-bottom:none}
+.twn{width:30px;height:30px;background:var(--accent);color:#fff;border-radius:50%;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.iq-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:24px}
+.mini{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:20px}
+.mini .mk{width:auto;height:32px;padding:0 10px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;margin-bottom:10px}
+.case-hd{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.case-badge{font-size:12px;font-weight:700;color:#fff;background:var(--accent);border-radius:8px;padding:6px 12px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-chip">Lecture 3 · Product Analytics</div>
+    <h1>Product Metrics II</h1>
+    <p class="hero-sub">The 5-step framework, run end-to-end on two interview cases interviewers actually ask.</p>
+    <div class="badges">
+      <span class="hero-badge">Case 1 · PureFit</span>
+      <span class="hero-badge">Case 2 · Indian Bank</span>
+      <span class="hero-badge">Funnel-Stage Metrics</span>
+      <span class="hero-badge">Revenue vs Adoption</span>
+    </div>
+  </div>
+</header>
+
+<nav class="snav">
+  <div class="snav-inner">
+    <a href="#recap">Recap</a>
+    <a href="#scene">The Scene</a>
+    <a href="#purefit">Case 1 · PureFit</a>
+    <a href="#bank">Case 2 · Indian Bank</a>
+    <a href="#interview">Interview</a>
+    <a href="#pocket">Pocket Card</a>
+  </div>
+</nav>
+
+<!-- RECAP -->
+<section class="sec" id="recap">
+  <div class="wrap">
+    <div class="lbl">Where we left off</div>
+    <h2>Recap of Lecture 2</h2>
+    <p class="measure" style="margin-bottom:24px">Last class you learned what makes a metric worth tracking and how to build a metric-definition answer. Today is that framework <em>in action</em>.</p>
+    <div class="g4">
+      <div class="mini"><div class="mk" style="background:var(--red)">Vanity vs Actionable</div><p style="font-size:13px;color:var(--text-s)">Downloads &amp; followers look good; conversion, retention &amp; LTV drive decisions.</p></div>
+      <div class="mini"><div class="mk" style="background:var(--accent)">The Pyramid</div><p style="font-size:13px;color:var(--text-s)">North Star → Primary (L1) → Supporting (L2).</p></div>
+      <div class="mini"><div class="mk" style="background:var(--amber)">Two Question Types</div><p style="font-size:13px;color:var(--text-s)">Change (CRIED/TROPiCS) vs Definition.</p></div>
+      <div class="mini"><div class="mk" style="background:var(--green)">5-Step Framework</div><p style="font-size:13px;color:var(--text-s)">Describe → Goal → Journey → Map → Evaluate.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE -->
+<section class="sec sec-alt" id="scene">
+  <div class="wrap">
+    <div class="lbl">Setting the scene</div>
+    <h2>Aditi Is on the Other Side of the Table</h2>
+    <p class="measure" style="margin-bottom:24px">She's now interviewing for a senior analyst role. After the warm-up, the interviewer leans in with the kind of question Lecture 2 prepared her for: not "why did a number move," but "what would you measure?"</p>
+    <div class="g2" style="gap:24px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:24px;border-top:3px solid var(--accent)">
+        <div class="tag t-indigo" style="margin-bottom:10px">Question 1</div>
+        <p style="font-size:16px;color:var(--text-h);font-weight:600;line-height:1.5;margin-bottom:10px">"A fitness app called PureFit wants to improve retention. What metric would you look at?"</p>
+        <p style="font-size:14px;color:var(--text-s)">Aditi doesn't blurt out "retention rate!" She describes the product, pins the goal, then <strong>walks the user down the funnel</strong> — acquisition, onboarding, engagement, retention — defining a metric at each step to spot where users leak away.</p>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rm);padding:24px;border-top:3px solid var(--green)">
+        <div class="tag t-green" style="margin-bottom:10px">Question 2</div>
+        <p style="font-size:16px;color:var(--text-h);font-weight:600;line-height:1.5;margin-bottom:10px">"Indian Bank just launched a mobile app. How would you measure its success?"</p>
+        <p style="font-size:14px;color:var(--text-s)">Same framework, very different product: here success splits into <strong>money</strong> (revenue routed through the app) and <strong>adoption</strong> (are people actually using it, and is it any good?).</p>
+      </div>
+    </div>
+    <div class="witty">💬 "Two cases, one repeatable method. The funnel does the thinking — you just read out the right metric at each stage."</div>
+  </div>
+</section>
+
+<!-- CASE 1 PUREFIT -->
+<section class="sec" id="purefit">
+  <div class="wrap">
+    <div class="case-hd"><span class="case-badge">Case 1</span><div class="lbl" style="margin:0">Fitness app · retention</div></div>
+    <h2>PureFit — What Metric Improves Retention?</h2>
+
+    <div class="card" style="margin:20px 0">
+      <div style="font-size:12px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Problem statement</div>
+      <p style="font-size:14.5px;margin-bottom:14px">PureFit's app offers fitness videos, exercise how-tos, diet plans, plus live classes and sessions to join.</p>
+      <div class="g2" style="margin-bottom:14px">
+        <div style="background:var(--bg-section);border-radius:var(--r);padding:14px"><div class="tag t-blue" style="margin-bottom:6px">Free customers</div><p style="font-size:13.5px">Access to certain videos and information — nothing customizable.</p></div>
+        <div style="background:var(--bg-section);border-radius:var(--r);padding:14px"><div class="tag t-purple" style="margin-bottom:6px">Paid customers</div><p style="font-size:13.5px">Personalized diet plans and expert advice tied to their fitness goals.</p></div>
+      </div>
+      <div class="callout" style="margin:0"><p><strong>Definition of "retained":</strong> a user who has stayed with us for <strong>at least two months</strong>. Fall off before that, and they don't count as retained.</p></div>
+    </div>
+
+    <!-- LEAKY BUCKET ANALOGY -->
+    <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin:8px 0 12px">🧩 Analogy</div>
+    <div class="analogy" style="margin-bottom:28px">
+      <div class="an-visual bucket">
+        <div class="an-emoji">🪣</div>
+        <div class="an-tag">Retention = a leaky bucket</div>
+        <div class="an-title">Pouring in more users is pointless if they leak out the sides</div>
+        <div class="an-premise">Retention is the water that <em>stays</em> after two months. If you only measure acquisition, you're pouring faster into a leaking bucket. Define a metric at every earlier stage so you can find — and patch — the holes before they cost you retention.</div>
+      </div>
+      <div class="an-map">
+        <div class="an-row"><div class="an-ico">🚰</div><div class="an-side">Water pouring in</div><div class="an-arrow">→</div><div class="an-frame">Acquisition — users joining</div></div>
+        <div class="an-row"><div class="an-ico">🕳️</div><div class="an-side">Holes in the bucket</div><div class="an-arrow">→</div><div class="an-frame">Drop-offs at onboarding &amp; engagement</div></div>
+        <div class="an-row"><div class="an-ico">💧</div><div class="an-side">Water that stays</div><div class="an-arrow">→</div><div class="an-frame">Retained users (2+ months)</div></div>
+        <div class="an-row"><div class="an-ico">🔧</div><div class="an-side">Patch holes before refilling</div><div class="an-arrow">→</div><div class="an-frame">Fix upstream metrics before buying more users</div></div>
+      </div>
+    </div>
+
+    <!-- FUNNEL -->
+    <h3 style="font-size:1.1rem;margin-bottom:6px">The user's funnel</h3>
+    <p style="font-size:13.5px;color:var(--text-s);margin-bottom:12px">👇 Tap each stage. Retention sits at the very bottom, so you measure everything above it to protect it.</p>
+    <div class="mod2" style="margin-bottom:8px">
+      <div class="fs" onclick="toggleF(this)"><div class="fsh"><div class="fl" style="background:var(--accent)">1</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text-h)">Acquisition</div><div style="font-size:12px;color:var(--text-s)">Getting users to join</div></div><div style="color:var(--text-m);font-size:12px">▼</div></div><div class="fb"><ul class="ml"><li>Number of users joined</li><li>Weekly / Monthly active users</li></ul></div></div>
+      <div class="fs" onclick="toggleF(this)"><div class="fsh"><div class="fl" style="background:var(--blue)">2</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text-h)">Onboarding</div><div style="font-size:12px;color:var(--text-s)">Signed up &amp; logged in</div></div><div style="color:var(--text-m);font-size:12px">▼</div></div><div class="fb"><ul class="ml"><li>Users who complete sign-up and first login — the checkpoint before real usage begins</li></ul></div></div>
+      <div class="fs" onclick="toggleF(this)"><div class="fsh"><div class="fl" style="background:var(--purple)">3</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text-h)">Engagement</div><div style="font-size:12px;color:var(--text-s)">Doing classes, watching videos</div></div><div style="color:var(--text-m);font-size:12px">▼</div></div><div class="fb"><ul class="ml"><li>Classes attended &amp; duration watched</li><li>Weekly/Monthly active users (WAU/MAU)</li><li>Match rate between user and content</li></ul></div></div>
+      <div class="fs" onclick="toggleF(this)"><div class="fsh"><div class="fl" style="background:var(--green)">4</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text-h)">Retention</div><div style="font-size:12px;color:var(--text-s)">Coming back for 2+ months</div></div><div style="color:var(--text-m);font-size:12px">▼</div></div><div class="fb"><ul class="ml"><li>The qualifying outcome: continuous use for two months</li><li>N-day retention (do they come back?)</li><li>Referrals &amp; feedback as leading "love" signals</li></ul></div></div>
+    </div>
+
+    <figure class="fig">
+      <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/226/099/original/ChatGPT_Image_Sep_10__2026__02_50_40_PM.png?1789032067" alt="PureFit user funnel" loading="lazy">
+      <figcaption>The PureFit funnel — acquisition → onboarding → engagement → retention.</figcaption>
+    </figure>
+
+    <div class="quiz" style="margin-top:16px">
+      <div class="qtag">Quiz 1 · Funnel thinking &amp; retention</div>
+      <div class="qq">"Retention" means a user staying active for at least two months — a metric that only appears very late in the funnel. Why is it still smart to define metrics at the earlier stages (acquisition, onboarding, engagement)?</div>
+      <div class="qopts">
+        <button class="qopt" data-k="A" onclick="pickQ(this,'B')"><span class="qk">A</span>Early-stage metrics are the only ones interviewers care about</button>
+        <button class="qopt" data-k="B" onclick="pickQ(this,'B')"><span class="qk">B</span>Because retention appears late, early-stage metrics reveal the drop-off points you must fix to protect it</button>
+        <button class="qopt" data-k="C" onclick="pickQ(this,'B')"><span class="qk">C</span>Acquisition metrics directly replace the need to measure retention</button>
+        <button class="qopt" data-k="D" onclick="pickQ(this,'B')"><span class="qk">D</span>The earlier stages have no impact on whether a user is retained</button>
+      </div>
+      <div class="qexp"><b>Answer: B.</b> Retention is a lagging outcome — by the time it dips, the users are already gone. Defining metrics at each earlier stage exposes where users leak sooner, so you can act upstream. That's the leaky-bucket idea: plug the holes before pouring in more users.</div>
+    </div>
+
+    <h3 style="font-size:1.15rem;margin:36px 0 6px">A metric at every stage</h3>
+    <p class="measure" style="margin-bottom:8px">Retention comes late in the funnel, so we define metrics across every stage to expose the drop-off points and design strategies to boost it.</p>
+    <figure class="fig">
+      <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/226/101/original/ChatGPT_Image_Sep_10__2026__02_55_29_PM.png?1789032378" alt="Metrics per funnel stage" loading="lazy">
+      <figcaption>Defining a relevant metric at each stage of the funnel to catch drop-offs early.</figcaption>
+    </figure>
+
+    <!-- METRIC CARDS -->
+    <div style="display:flex;flex-direction:column;gap:16px;margin-top:8px">
+      <div class="mc">
+        <div class="mc-head"><div class="mc-num">1</div><div><h3 style="margin:0">Number of new users joined / Sign-ups</h3><span class="tag t-indigo" style="margin-top:4px;display:inline-block">Acquisition</span></div></div>
+        <ul class="ml">
+          <li>The most basic metrics — direct read on the product's ongoing statistics and the first step of the funnel</li>
+          <li>In a growth phase, the main goal is often growing the user base and getting more people onboard</li>
+          <li>Feeds strategy: adjust marketing, and build a notification system to nudge onboarded users to attend more classes/videos and stay active</li>
+        </ul>
+      </div>
+
+      <div class="mc" style="border-left-color:var(--blue)">
+        <div class="mc-head"><div class="mc-num" style="background:var(--blue)">2</div><div><h3 style="margin:0">Retention table / Nth-day retention</h3><span class="tag t-blue" style="margin-top:4px;display:inline-block">Retention</span></div></div>
+        <div class="g2" style="align-items:start">
+          <ul class="ml">
+            <li>N-day retention = how many users come back on a particular day, counting from <strong>Day 0</strong></li>
+            <li>Day 0 = the day a free user downloaded the app, or a paid user made their transaction</li>
+            <li>High new-user counts mean little if retention is low — you'll keep losing customers and shrink your base</li>
+            <li>It's a direct read on product quality and stickiness</li>
+          </ul>
+          <div style="background:var(--bg-section);border-radius:var(--rm);padding:18px">
+            <div style="font-size:12px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Worked example</div>
+            <div class="rbar">
+              <div class="rbcol"><div class="rbfill" style="height:100%"></div><div class="rblbl"><strong>1000</strong><br>Day 0</div></div>
+              <div class="rbcol"><div class="rbfill" style="height:13%"></div><div class="rblbl"><strong>130</strong><br>Day 7</div></div>
+            </div>
+            <p style="font-size:13.5px">Day-7 retention = 130 / 1000 = <strong>13%</strong>. Day 0 is each user's <em>own</em> start date — which is why cohorts are tracked per acquisition date.</p>
+          </div>
+        </div>
+        <a class="toollink" href="https://dsml-vizs.vercel.app/pa-3/n-day-retention-cohort-decay-gym-rush-people-decay/" target="_blank" rel="noopener">📉 Interactive: N-day retention cohort decay ↗</a>
+        <div class="quiz" style="margin-top:16px">
+          <div class="qtag">Quiz 2 · N-day retention</div>
+          <div class="qq">A cohort of 1,000 users first opens the app on Day 0. On Day 7, 130 of them open it again. What is this cohort's Day-7 retention, and what does "Day 0" represent?</div>
+          <div class="qopts">
+            <button class="qopt" data-k="A" onclick="pickQ(this,'A')"><span class="qk">A</span>13%; Day 0 is the day each user first used the app</button>
+            <button class="qopt" data-k="B" onclick="pickQ(this,'A')"><span class="qk">B</span>87%; Day 0 is the day the user churned</button>
+            <button class="qopt" data-k="C" onclick="pickQ(this,'A')"><span class="qk">C</span>13%; Day 0 is one week before install</button>
+            <button class="qopt" data-k="D" onclick="pickQ(this,'A')"><span class="qk">D</span>7%; Day 0 is the app's public launch date</button>
+          </div>
+          <div class="qexp"><b>Answer: A.</b> N-day retention = (users active on day N) / (users who first used the app on Day 0) = 130 / 1000 = 13%. Day 0 is each user's own starting point (a free user's download or a paid user's first transaction), not one fixed calendar date — which is why cohorts are tracked per acquisition date.</div>
+        </div>
+      </div>
+
+      <div class="mc" style="border-left-color:var(--purple)">
+        <div class="mc-head"><div class="mc-num" style="background:var(--purple)">3</div><div><h3 style="margin:0">Classes attended / duration of class attended</h3><span class="tag t-purple" style="margin-top:4px;display:inline-block">Engagement</span></div></div>
+        <ul class="ml">
+          <li>Total classes attended and time logged in — plus <strong>when</strong> they drop off (e.g. signing in, browsing, leaving within 2–3 min → fix search &amp; recommendations)</li>
+          <li><strong>Weekly / Monthly active users (WAU/MAU)</strong> also belong here — how many of the users we acquired are actually using the app in a given week or month</li>
+          <li>Low "watched till the end" numbers suggest users don't like the content</li>
+          <li>Define the desired interaction level to measure against it</li>
+        </ul>
+        <div class="g3" style="margin-top:12px">
+          <div style="background:#D1FAE5;border-radius:var(--r);padding:12px 14px"><div style="font-size:12px;font-weight:700;color:#065F46;margin-bottom:2px">Super 🎉</div><p style="font-size:13px;color:#065F46">More than once a day</p></div>
+          <div style="background:var(--accent-wash);border-radius:var(--r);padding:12px 14px"><div style="font-size:12px;font-weight:700;color:var(--accent-dark);margin-bottom:2px">Good ✅</div><p style="font-size:13px;color:var(--accent-dark)">At least once a day</p></div>
+          <div style="background:#FEE2E2;border-radius:var(--r);padding:12px 14px"><div style="font-size:12px;font-weight:700;color:#991B1B;margin-bottom:2px">Bad ⚠️</div><p style="font-size:13px;color:#991B1B">Less than twice a week / once a week</p></div>
+        </div>
+      </div>
+
+      <div class="mc" style="border-left-color:var(--amber)">
+        <div class="mc-head"><div class="mc-num" style="background:var(--amber)">4</div><div><h3 style="margin:0">Referrals &amp; links shared / feedback received</h3><span class="tag t-amber" style="margin-top:4px;display:inline-block">Retention</span></div></div>
+        <ul class="ml">
+          <li>Heavy sharing of a video or diet plan = users find it useful and love it</li>
+          <li>Powers a referral-based marketing strategy (perks/discounts for connections who join)</li>
+          <li>Feedback ("How was the session?", how the user communicates) → analyse to gauge whether the user will stay</li>
+        </ul>
+      </div>
+
+      <div class="mc" style="border-left-color:var(--green)">
+        <div class="mc-head"><div class="mc-num" style="background:var(--green)">5</div><div><h3 style="margin:0">Match rate between user and content</h3><span class="tag t-green" style="margin-top:4px;display:inline-block">Engagement</span></div></div>
+        <p style="font-size:14px;color:var(--text-s);margin-bottom:12px">Really an <strong>onboarding problem</strong>: if we don't capture a user's goal and fitness level at sign-up, we serve mismatched content from day one. Measure it with:</p>
+        <div class="g2" style="gap:10px;margin-bottom:12px">
+          <div style="background:var(--bg-section);border-radius:var(--r);padding:12px 14px"><div style="font-size:12px;font-weight:600;color:var(--text-h);margin-bottom:2px">Match rate</div><p style="font-size:13px;color:var(--text-s)">% of new users whose first few classes match the goal &amp; level they selected at sign-up</p></div>
+          <div style="background:var(--bg-section);border-radius:var(--r);padding:12px 14px"><div style="font-size:12px;font-weight:600;color:var(--text-h);margin-bottom:2px">Onboarding completion rate</div><p style="font-size:13px;color:var(--text-s)">% of new sign-ups who complete the goal/level questionnaire</p></div>
+        </div>
+        <ul class="ml">
+          <li>Why is the user dropping off? Beyond raw content quality, are they getting what they came for?</li>
+          <li>A beginner signed up for advanced content will be disheartened and drop off; someone wanting Zumba led into yoga/weight-training won't stay</li>
+          <li>Fix: tag &amp; categorise all classes by level and type; ask users their intent and expertise up front to recommend a perfect match</li>
+        </ul>
+        <figure class="fig" style="margin-bottom:0">
+          <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/226/113/original/ChatGPT_Image_Sep_10__2026__03_01_45_PM.png?1789032713" alt="Match rate between user and content" loading="lazy">
+          <figcaption>Match rate — aligning content level and type with what each user actually wants.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:20px"><p><strong>Note:</strong> a metric like <strong>free-to-paid conversion %</strong> would matter if the goal were the success of the <em>overall</em> app — not retention specifically. Always tie the metric back to the stated goal.</p></div>
+    <div class="witty">🎯 Aditi never memorised a "retention metric." She walked the same funnel she learned as AAAERR and the 5-step framework — and read out the right metric at each stage. The funnel does the thinking for you.</div>
+  </div>
+</section>
+
+<!-- CASE 2 BANK -->
+<section class="sec sec-alt" id="bank">
+  <div class="wrap">
+    <div class="case-hd"><span class="case-badge" style="background:var(--green)">Case 2</span><div class="lbl" style="margin:0">Banking app · success</div></div>
+    <h2>Indian Bank — Defining Success for a Bank App</h2>
+
+    <div class="card" style="margin:20px 0">
+      <div style="font-size:12px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Problem statement</div>
+      <p style="font-size:14.5px;margin-bottom:12px">Indian Bank has run for 5 years with an established customer base, and just launched a new mobile app. <strong>What success metrics determine the app's success?</strong></p>
+      <ul class="ml" style="margin-bottom:12px">
+        <li>Scope: focus on the success of the <strong>mobile app only</strong>, not the whole bank</li>
+        <li>Two user types: existing users who <strong>port</strong> to the app, and <strong>new</strong> users joining via it (new users add an account-creation step)</li>
+        <li>After that, the journey is the same for everyone: transactions and features — investments, fixed &amp; recurring deposits, loans, etc.</li>
+      </ul>
+      <div class="g2">
+        <div style="background:var(--accent-wash);border-radius:var(--r);padding:14px"><div class="tag t-indigo" style="margin-bottom:6px">Split A · Revenue-based</div><p style="font-size:13.5px;color:var(--accent-dark)">Revenue generated or routed through the app — the direct business impact of its features.</p></div>
+        <div style="background:#D1FAE5;border-radius:var(--r);padding:14px"><div class="tag t-green" style="margin-bottom:6px">Split B · Adoption (non-revenue)</div><p style="font-size:13.5px;color:#065F46">Is the app user-friendly and meeting user expectations?</p></div>
+      </div>
+    </div>
+
+    <figure class="fig">
+      <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/226/118/original/ChatGPT_Image_Sep_10__2026__03_04_44_PM.png?1789032938" alt="Bank app success: revenue vs adoption" loading="lazy">
+      <figcaption>A bank app's success splits into two lenses: revenue routed through it, and user adoption.</figcaption>
+    </figure>
+
+    <!-- CHANNEL SHIFT ANALOGY -->
+    <div style="font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;margin:8px 0 12px">🧩 Analogy</div>
+    <div class="analogy" style="margin-bottom:28px">
+      <div class="an-visual door">
+        <div class="an-emoji">🚪</div>
+        <div class="an-tag">New revenue vs shifted revenue</div>
+        <div class="an-title">A new door for the same crowd isn't a bigger crowd</div>
+        <div class="an-premise">₹50 crore flowing through the app looks like new money — but if it's the same customers who used to walk into a branch, you've just opened a shinier door. The building isn't fuller; people came in a different way. Separate genuinely new revenue from merely shifted revenue.</div>
+      </div>
+      <div class="an-map">
+        <div class="an-row"><div class="an-ico">🚪</div><div class="an-side">The shiny new door</div><div class="an-arrow">→</div><div class="an-frame">The app as a new channel</div></div>
+        <div class="an-row"><div class="an-ico">👥</div><div class="an-side">The same crowd, new door</div><div class="an-arrow">→</div><div class="an-frame">Existing customers, same activity (shifted)</div></div>
+        <div class="an-row"><div class="an-ico">➕</div><div class="an-side">Genuinely new footfall</div><div class="an-arrow">→</div><div class="an-frame">New users / new behaviours = real growth</div></div>
+        <div class="an-row"><div class="an-ico">🔍</div><div class="an-side">Counting only the new door</div><div class="an-arrow">→</div><div class="an-frame">The Cannibalization check from TROPiCS</div></div>
+      </div>
+    </div>
+
+    <!-- REVENUE -->
+    <h3 style="font-size:1.15rem;margin-bottom:6px">1. Revenue-based metrics</h3>
+    <p class="measure" style="margin-bottom:14px">To measure the app's revenue, first understand how the bank itself earns — then isolate the app's slice.</p>
+    <div style="font-size:12px;font-weight:600;color:var(--text-s);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">How banks make money</div>
+    <div class="chips" style="margin-bottom:20px">
+      <span class="chip">Credit card fees</span><span class="chip">Checking accounts</span><span class="chip">Savings accounts</span>
+      <span class="chip">Mutual fund revenue</span><span class="chip">Investment management fees</span><span class="chip">Payment gateway fees</span>
+    </div>
+
+    <div class="g2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="tag t-blue" style="margin-bottom:10px">Revenue up from less friction</div>
+        <p style="font-size:14px">Easier online payments, loans and investments pull in users who never used those features before. Paying via wallet/UPI is far easier than internet banking — so overall revenue rises.</p>
+      </div>
+      <div class="card">
+        <div class="tag t-indigo" style="margin-bottom:10px">Revenue from the app itself</div>
+        <p style="font-size:14px;margin-bottom:10px">To isolate the app's true impact, separate existing-channel revenue from app revenue (mind cannibalization). Target:</p>
+        <div class="chips"><span class="chip">Transactions per day</span><span class="chip">Transactions per customer</span><span class="chip">Total transaction value</span></div>
+        <p style="font-size:13px;color:var(--text-s);margin-top:10px">Also slice by transaction type, merchant and purpose to attribute correctly.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-bottom:20px"><p><strong>Target question:</strong> what share of transactions via the app signals success? Assuming an industry shift to online, you could target roughly <strong>80%</strong> of transactions and feature access for a successful transition to a mobile-oriented bank.</p></div>
+
+    <div class="quiz">
+      <div class="qtag">Quiz 3 · New revenue vs shifted revenue</div>
+      <div class="qq">The app reports ₹50 crore in monthly transactions. Before calling the app a revenue success, why must you separate this from the bank's existing channel revenue?</div>
+      <div class="qopts">
+        <button class="qopt" data-k="A" onclick="pickQ(this,'B')"><span class="qk">A</span>Because app revenue is always more valuable than branch revenue</button>
+        <button class="qopt" data-k="B" onclick="pickQ(this,'B')"><span class="qk">B</span>Because some of it may be cannibalized — revenue that merely shifted from branches / net-banking, not genuinely new money</button>
+        <button class="qopt" data-k="C" onclick="pickQ(this,'B')"><span class="qk">C</span>Because transactions per customer is a vanity metric</button>
+        <button class="qopt" data-k="D" onclick="pickQ(this,'B')"><span class="qk">D</span>Because the app should always target 100% of all transactions</button>
+      </div>
+      <div class="qexp"><b>Answer: B.</b> Much of the app's volume can be existing customers doing the same activity through a new channel — channel shift, not incremental revenue. Isolate genuinely new revenue (new users, new behaviours) from merely cannibalized revenue — the same Cannibalization check you met in TROPiCS.</div>
+    </div>
+
+    <!-- ADOPTION -->
+    <h3 style="font-size:1.15rem;margin:36px 0 6px">2. User adoption metrics</h3>
+    <p class="measure" style="margin-bottom:14px">Money through the app is half the picture. The other half: are people actually adopting it?</p>
+    <div class="g2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="tag t-green" style="margin-bottom:10px">Segment adoption two ways</div>
+        <ul class="ml"><li>Existing users who <strong>ported</strong> to the mobile app</li><li>New users joining <em>via</em> the app</li></ul>
+        <p style="font-size:13px;color:var(--text-s);margin-top:10px">This also helps attribute future app-generated revenue.</p>
+      </div>
+      <div class="card">
+        <div class="tag t-indigo" style="margin-bottom:10px">Accounts opened via app</div>
+        <p style="font-size:14px">Measure total accounts vs accounts now opened through the app. The <strong>ratio</strong> is what you push up — telling you how comfortable users are doing tasks (account opening, FDs, investments) on the app.</p>
+      </div>
+    </div>
+
+    <!-- FEEDBACK -->
+    <h3 style="font-size:1.15rem;margin:24px 0 6px">3. User feedback &amp; application records</h3>
+    <div class="g4" style="margin-bottom:20px">
+      <div class="mc" style="border-left-color:var(--accent);padding:18px"><h3 style="font-size:.98rem">NPS</h3><p style="font-size:13px;color:var(--text-s)">Net Promoter Score — one of the best reads on long-term growth.</p></div>
+      <div class="mc" style="border-left-color:var(--purple);padding:18px"><h3 style="font-size:.98rem">Sentiment analysis</h3><p style="font-size:13px;color:var(--text-s)">On user feedback — surfaces problems and the user's perspective.</p></div>
+      <div class="mc" style="border-left-color:var(--red);padding:18px"><h3 style="font-size:.98rem">Abandon Rate</h3><p style="font-size:13px;color:var(--text-s)">% who start a process in the app but don't complete it — where &amp; why they drop.</p></div>
+      <div class="mc" style="border-left-color:var(--green);padding:18px"><h3 style="font-size:.98rem">Task Completion Rate</h3><p style="font-size:13px;color:var(--text-s)">The mirror image — are users achieving their intended tasks, and at what rate?</p></div>
+    </div>
+    <a class="toollink" href="https://dsml-vizs.vercel.app/pa-3/abandon-rate-flow-drop-off/" target="_blank" rel="noopener" style="margin-bottom:20px">📉 Interactive: abandon-rate flow drop-off ↗</a>
+
+    <div class="quiz">
+      <div class="qtag">Quiz 4 · Choosing the right feedback metric</div>
+      <div class="qq">Many users start a fund transfer but quit before confirming it. Which metric most directly captures this specific problem?</div>
+      <div class="qopts">
+        <button class="qopt" data-k="A" onclick="pickQ(this,'B')"><span class="qk">A</span>Net Promoter Score (NPS)</button>
+        <button class="qopt" data-k="B" onclick="pickQ(this,'B')"><span class="qk">B</span>Abandon Rate</button>
+        <button class="qopt" data-k="C" onclick="pickQ(this,'B')"><span class="qk">C</span>Total number of app downloads</button>
+        <button class="qopt" data-k="D" onclick="pickQ(this,'B')"><span class="qk">D</span>Monthly active users (MAU)</button>
+      </div>
+      <div class="qexp"><b>Answer: B.</b> Abandon Rate is the % of users who start a process but don't complete it — exactly "start a transfer, drop before confirming," and it pinpoints where in the flow they quit. NPS measures overall loyalty, not a specific drop-off; downloads and MAU are volume metrics that say nothing about task failure. (Task Completion Rate is the mirror image — the % who succeed.)</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERVIEW -->
+<section class="sec" id="interview">
+  <div class="wrap">
+    <div class="lbl">Interview corner</div>
+    <h2>Practice Questions</h2>
+    <p class="measure" style="margin-bottom:28px">Frame your own answer first — then reveal the approach.</p>
+    <div class="mod2">
+      <div class="iq-card">
+        <div style="font-size:15px;font-weight:600;color:var(--text-h);margin-bottom:8px">Q1 — Improve retention for a language-learning app. What would you measure?</div>
+        <span class="tag t-indigo" style="margin-bottom:14px;display:inline-block">Funnel-stage metrics</span>
+        <button class="rev-btn" onclick="toggleR(this)">▶ &nbsp;Show approach</button>
+        <div class="rev-body"><div style="background:var(--bg-section);border-radius:var(--r);padding:16px;margin-top:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:14px"><strong style="color:var(--accent)">Describe + goal:</strong> define "retained" (e.g. active 30+ days); the goal is repeat practice.</div>
+          <div style="font-size:14px"><strong style="color:var(--blue)">Walk the funnel:</strong> Acquisition (installs) → Onboarding (first lesson completed) → Engagement (lessons/day, streaks, N-day retention) → Retention (30-day return).</div>
+          <div style="font-size:14px"><strong style="color:var(--green)">Match rate:</strong> is content at the learner's level? A beginner in advanced lessons churns.</div>
+          <div style="font-size:14px"><strong style="color:var(--amber)">Leaky bucket:</strong> find the earliest stage that leaks and fix it before buying more installs.</div>
+        </div></div>
+      </div>
+
+      <div class="iq-card">
+        <div style="font-size:15px;font-weight:600;color:var(--text-h);margin-bottom:8px">Q2 — A retailer launches a payments app. How do you measure success?</div>
+        <span class="tag t-green" style="margin-bottom:14px;display:inline-block">Revenue vs Adoption</span>
+        <button class="rev-btn" onclick="toggleR(this)">▶ &nbsp;Show approach</button>
+        <div class="rev-body"><div style="background:var(--bg-section);border-radius:var(--r);padding:16px;margin-top:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:14px"><strong style="color:var(--accent)">Split it:</strong> revenue metrics (transactions/day, per customer, total value) + adoption metrics (ported vs new users, accounts/wallets created via app).</div>
+          <div style="font-size:14px"><strong style="color:var(--red)">Cannibalization:</strong> separate genuinely new revenue from card/branch revenue that just shifted channels.</div>
+          <div style="font-size:14px"><strong style="color:var(--purple)">Experience:</strong> NPS, sentiment, Abandon Rate and Task Completion Rate to catch broken flows.</div>
+        </div></div>
+      </div>
+
+      <div class="iq-card">
+        <div style="font-size:15px;font-weight:600;color:var(--text-h);margin-bottom:8px">Q3 — Users complete a purchase but 40% abandon before payment. Which metric, and what next?</div>
+        <span class="tag t-amber" style="margin-bottom:14px;display:inline-block">Feedback metric</span>
+        <button class="rev-btn" onclick="toggleR(this)">▶ &nbsp;Show approach</button>
+        <div class="rev-body"><div style="background:var(--bg-section);border-radius:var(--r);padding:16px;margin-top:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:14px"><strong style="color:var(--red)">Metric:</strong> Abandon Rate — % who start but don't finish; pinpoints the exact step they quit.</div>
+          <div style="font-size:14px"><strong style="color:var(--green)">Mirror:</strong> Task Completion Rate to track improvement as you fix the flow.</div>
+          <div style="font-size:14px"><strong style="color:var(--accent)">Then:</strong> segment abandonment by step, platform and payment method to localise the break.</div>
+        </div></div>
+      </div>
+
+      <div class="iq-card">
+        <div style="font-size:15px;font-weight:600;color:var(--text-h);margin-bottom:8px">Q4 — Your cohort's Day-1 retention is 40% but Day-30 is 4%. What story does that tell?</div>
+        <span class="tag t-blue" style="margin-bottom:14px;display:inline-block">N-day retention</span>
+        <button class="rev-btn" onclick="toggleR(this)">▶ &nbsp;Show approach</button>
+        <div class="rev-body"><div style="background:var(--bg-section);border-radius:var(--r);padding:16px;margin-top:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:14px"><strong style="color:var(--accent)">Read the curve:</strong> steep early drop then flat = users try it once and don't form a habit — an engagement/match problem, not acquisition.</div>
+          <div style="font-size:14px"><strong style="color:var(--blue)">Dig:</strong> where in those 30 days does the curve fall off a cliff? That's the drop-off point to fix.</div>
+          <div style="font-size:14px"><strong style="color:var(--green)">Fix upstream:</strong> better onboarding, content match, and re-engagement nudges — the leaky-bucket holes.</div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POCKET -->
+<section class="sec sec-alt" id="pocket">
+  <div class="wrap">
+    <div class="lbl">Quick reference</div>
+    <h2 style="margin-bottom:20px">Analyst's Pocket Card</h2>
+    <div class="pocket">
+      <div class="g2" style="gap:36px">
+        <div>
+          <h3>Case 1 · PureFit (retention)</h3>
+          <div class="prow">
+            <div class="pi"><span>Acq</span> New sign-ups</div>
+            <div class="pi"><span>Ret</span> N-day retention</div>
+            <div class="pi"><span>Eng</span> Classes · duration · WAU/MAU</div>
+            <div class="pi"><span>Eng</span> Match rate</div>
+            <div class="pi"><span>Ret</span> Referrals · feedback</div>
+          </div>
+          <h3>N-day retention</h3>
+          <div class="prow"><div class="pi">active on day N ÷ users from Day 0 · e.g. 130/1000 = <span>13%</span></div></div>
+        </div>
+        <div>
+          <h3>Case 2 · Indian Bank (success)</h3>
+          <div class="prow">
+            <div class="pi"><span>₹</span> Txns/day · per customer · total value</div>
+            <div class="pi"><span>Adopt</span> Ported vs new · accounts via app</div>
+            <div class="pi"><span>NPS</span> + sentiment</div>
+            <div class="pi"><span>↓</span> Abandon Rate</div>
+            <div class="pi"><span>✓</span> Task Completion Rate</div>
+          </div>
+          <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:14px;font-size:13.5px;color:#C7D2FE;margin-top:4px">Always separate <strong style="color:#fff">new revenue</strong> from <strong style="color:#fff">shifted (cannibalized)</strong> revenue.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY + TAKEAWAYS -->
+<section class="sec" id="summary">
+  <div class="wrap">
+    <div class="lbl">Today's journey in one picture</div>
+    <h2 style="margin-bottom:6px">Two Products, One Repeatable Method</h2>
+    <figure class="fig">
+      <img src="https://d2beiqkhq929f0.cloudfront.net/public_assets/assets/000/226/123/original/ChatGPT_Image_Sep_10__2026__03_11_34_PM.png?1789033319" alt="Today's journey summary" loading="lazy">
+      <figcaption>Defining funnel-stage metrics for PureFit retention, and splitting a bank app's success into revenue and adoption.</figcaption>
+    </figure>
+
+    <h2 style="margin:36px 0 20px">Key Takeaways</h2>
+    <div class="card" style="max-width:960px">
+      <div class="tw"><div class="twn">1</div><div><div style="font-weight:600;color:var(--text-h);margin-bottom:4px">Let the funnel do the thinking</div><p style="font-size:14px;color:var(--text-s)">Describe → Goal → walk the journey → define a metric at each stage. You never memorise a metric; you read the right one off the funnel.</p></div></div>
+      <div class="tw"><div class="twn">2</div><div><div style="font-weight:600;color:var(--text-h);margin-bottom:4px">Retention is lagging — measure upstream</div><p style="font-size:14px;color:var(--text-s)">It appears late in the funnel, so acquisition, onboarding and engagement metrics expose the leaks you must patch to protect it.</p></div></div>
+      <div class="tw"><div class="twn">3</div><div><div style="font-weight:600;color:var(--text-h);margin-bottom:4px">N-day retention = active on day N ÷ Day-0 cohort</div><p style="font-size:14px;color:var(--text-s)">Day 0 is each user's own start date. It's a direct read on product quality and stickiness.</p></div></div>
+      <div class="tw"><div class="twn">4</div><div><div style="font-weight:600;color:var(--text-h);margin-bottom:4px">Split a bank app into revenue + adoption</div><p style="font-size:14px;color:var(--text-s)">Transactions/day, per customer, total value for money; ported-vs-new users and accounts-via-app for adoption.</p></div></div>
+      <div class="tw"><div class="twn">5</div><div><div style="font-weight:600;color:var(--text-h);margin-bottom:4px">Separate new revenue from shifted revenue</div><p style="font-size:14px;color:var(--text-s)">Channel shift isn't growth. Use NPS, sentiment, Abandon Rate and Task Completion Rate to judge the experience itself.</p></div></div>
+    </div>
+
+    <div style="margin-top:28px;text-align:center;padding:36px;background:var(--accent-wash);border-radius:var(--rm)">
+      <div style="font-size:13px;color:var(--text-s);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;font-weight:600">Up next</div>
+      <div style="font-size:24px;font-weight:700;color:var(--text-h);margin-bottom:4px">RCA I — Root Cause Analysis</div>
+      <div style="font-size:14.5px;color:var(--text-s)">We switch from <em>defining</em> metrics to <em>diagnosing</em> them when a number moves unexpectedly.</div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#0F172A;padding:28px 20px;text-align:center">
+  <div style="font-size:13px;color:#475569">Scaler — Product Analytics Module &nbsp;·&nbsp; Lecture 3 of 12</div>
+</footer>
+
+<script>
+function toggleF(s){s.querySelector('.fb').classList.toggle('on');}
+function pickQ(btn,correct){
+  var box=btn.closest('.quiz');
+  box.querySelectorAll('.qopt').forEach(function(o){o.disabled=true;});
+  if(btn.getAttribute('data-k')===correct){btn.classList.add('correct');}
+  else{btn.classList.add('wrong');box.querySelector('.qopt[data-k="'+correct+'"]').classList.add('correct');}
+  box.querySelector('.qexp').classList.add('on');
+}
+function toggleR(btn){var b=btn.nextElementSibling,open=b.classList.contains('on');b.classList.toggle('on');btn.innerHTML=open?'▶ &nbsp;Show approach':'▼ &nbsp;Hide approach';}
+var secs=[].slice.call(document.querySelectorAll('section[id]'));
+var nav=[].slice.call(document.querySelectorAll('.snav a'));
+window.addEventListener('scroll',function(){
+  var cur='';secs.forEach(function(s){if(window.scrollY>=s.offsetTop-80)cur=s.id;});
+  nav.forEach(function(n){n.classList.remove('on');if(n.getAttribute('href')==='#'+cur)n.classList.add('on');});
+});
+</script>
+</body>
+</html>
+
+</body></html>
